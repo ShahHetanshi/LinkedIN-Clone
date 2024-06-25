@@ -19,3 +19,4 @@ export default function Home() {
   }, []);
   return loading ? <Loader /> : <HomeComponent />;
 }
+//Minor Bugs fixed.
