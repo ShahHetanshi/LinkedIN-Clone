@@ -1,22 +1,26 @@
-import React, { useEffect, useState } from "react";
-import HomeComponent from "../components/HomeComponent";
-import { onAuthStateChanged } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
-import { auth } from "../firebaseConfig";
-import Loader from "../components/common/Loader";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { onAuthStateChanged } from 'firebase/auth';
+import Loader from './Loader'; // Adjust the path as necessary
+import HomeComponent from './HomeComponent'; // Adjust the path as necessary
+import { auth } from './firebase'; // Adjust the path as necessary
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+
   useEffect(() => {
-    onAuthStateChanged(auth, (res) => {
+    const unsubscribe = onAuthStateChanged(auth, (res) => {
       if (!res?.accessToken) {
         navigate("/");
       } else {
         setLoading(false);
       }
     });
-  }, []);
+
+    // Clean up the subscription on unmount
+    return () => unsubscribe();
+  }, [navigate]);
+
   return loading ? <Loader /> : <HomeComponent />;
 }
-//Minor Bugs fixed.
